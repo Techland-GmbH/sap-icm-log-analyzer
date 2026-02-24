@@ -22,9 +22,7 @@ fn main() {
 
             // 3. Aggregate if both fields were successfully extracted
             if let (Some(m), Some(ip)) = (minute, ip) {
-                *utilization_data
-                    .entry((m, ip.parse().unwrap()))
-                    .or_insert(0) += 1;
+                *utilization_data.entry((m, ip.into())).or_insert(0) += 1;
             }
         }
     } else {
