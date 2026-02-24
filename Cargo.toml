@@ -1,6 +1,16 @@
 [package]
 name = "sap-icm-log-analyzer"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
+publish = false
+authors = ["Björn Kötter <b.koetter@techland.de>"]
+description = "A tool to process SAP ICM log files and generate a report"
 
 [dependencies]
+
+[profile.release]
+strip = true
+lto = true
+opt-level = "z"
+codegen-units = 1
+panic = "abort"
