@@ -1,5 +1,5 @@
 [package]
-name = "sap-icm-log-reader"
+name = "sap-icm-log-analyzer"
 version = "0.1.0"
 edition = "2024"
 
