@@ -38,8 +38,11 @@ fn print_report(data: &HashMap<(String, String), usize>) {
 }
 
 fn main() {
-    // Specify the path to your log file here
-    let log_path = format!("{}/access.log", std::env::var("HOME").unwrap_or_default());
+    // Determine the path to the log file
+    let log_path = std::env::args().nth(1).unwrap_or(format!(
+        "{}/access.log",
+        std::env::var("HOME").unwrap_or_default()
+    ));
 
     // HashMap to store our aggregations: Key = (Minute, Internal IP), Value = Request Count
     let mut utilization_data: HashMap<(String, String), usize> = HashMap::new();
