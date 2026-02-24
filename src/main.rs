@@ -18,11 +18,13 @@ fn main() {
 
             // 2. Extract Minute and Internal IP
             let minute = extract_minute(&line);
-            let internal_ip = extract_internal_ip(&line);
+            let ip = line.split_whitespace().nth(2);
 
             // 3. Aggregate if both fields were successfully extracted
-            if let (Some(m), Some(ip)) = (minute, internal_ip) {
-                *utilization_data.entry((m, ip)).or_insert(0) += 1;
+            if let (Some(m), Some(ip)) = (minute, ip) {
+                *utilization_data
+                    .entry((m, ip.parse().unwrap()))
+                    .or_insert(0) += 1;
             }
         }
     } else {
@@ -50,26 +52,6 @@ fn extract_minute(line: &str) -> Option<String> {
         if parts.len() >= 3 {
             // Reconstruct up-to-the-minute: "21/Feb/2026:19:48"
             return Some(format!("{}:{}:{}", parts[0], parts[1], parts[2]));
-        }
-    }
-    None
-}
-
-// Extracts the last IP from the x-forwarded-for header block
-fn extract_internal_ip(line: &str) -> Option<String> {
-    let marker = "[x-forwarded-for : ";
-    if let Some(start_idx) = line.find(marker) {
-        let content_start = start_idx + marker.len();
-        if let Some(end_idx) = line[content_start..].find(']') {
-            let ips_str = &line[content_start..content_start + end_idx];
-
-            // ips_str example: "94.31.115.82, 10.0.72.1"
-            let ips: Vec<&str> = ips_str.split(',').collect();
-
-            // The internal IP appended by the proxy is always the last one in the chain
-            if let Some(last_ip) = ips.last() {
-                return Some(last_ip.trim().to_string());
-            }
         }
     }
     None
